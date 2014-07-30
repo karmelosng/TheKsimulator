@@ -1427,7 +1427,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
 
 
         }
-
+      controller.createUndoRedoFile();
     }//GEN-LAST:event_moduleComboItemStateChanged
 
     private void availableCompListMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_availableCompListMouseEntered
@@ -1861,8 +1861,15 @@ public class SimView extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_recentMenuMenuSelected
 
     private void undoItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undoItemActionPerformed
-
-        String lng = controller.undoAction();
+     if(controller.getState() == null){
+         OkOption okOption = new OkOption(this, "ILLegal Operation");
+         okOption.setLabel1("You Cant Do This Operation:\n REASON:: UnRegistered User");
+         okOption.showDialog();
+        }
+     else{
+         String lng = controller.undoAction();
+        }
+       
        // JOptionPane.showMessageDialog(this, lng);        // TODO add your handling code here:
     }//GEN-LAST:event_undoItemActionPerformed
 
@@ -2350,7 +2357,7 @@ class DnDpaneldrop extends TransferHandler implements DropTargetListener {
 
     @Override
     public void dragExit(DropTargetEvent dte) {
-//        JOptionPane.showConfirmDialog(null, "You Have Dragged Component Out of Drop Area!!", "Drag Out Of Worspace Alert", JOptionPane.OK_OPTION);
+//       JOptionPane.showConfirmDialog(null, "You Have Dragged Component Out of Drop Area!!", "Drag Out Of Worspace Alert", JOptionPane.OK_OPTION);
         OkOption ok = new OkOption(null, "KSimulator");
         ok.setLabel1("Cannot place component outside Workspace area");
         ok.showDialog();
@@ -2386,8 +2393,17 @@ class DnDpaneldrop extends TransferHandler implements DropTargetListener {
                 simController.calculateFreshDropOverlapPercentage(dropped, tempPoint);
                 simController.placeComponent(dropped, tempPoint);
                 simController.setDropOccured(true);
+                
+                
+                if(simController.getState()!= null){
+                    // do a UndoRedo controller activities
                 simController.createModification(dropped.getComponentName(), simController.getSimUser().getFirstName(), "drop", System.currentTimeMillis(), tempPoint.toString());
                 simController.splitUndoRedoLog();
+                }
+                else{
+                
+                }
+               
                 dtde.dropComplete(true);
                 //ask to see
 
@@ -2395,9 +2411,9 @@ class DnDpaneldrop extends TransferHandler implements DropTargetListener {
             }
             dtde.rejectDrop();
         } catch (UnsupportedFlavorException ex) {
-            Logger.getLogger(DnDpaneldrop.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(DnDpaneldrop.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(DnDpaneldrop.class.getName()).log(Level.SEVERE, null, ex);
+           // Logger.getLogger(DnDpaneldrop.class.getName()).log(Level.SEVERE, null, ex);
         }
 
 

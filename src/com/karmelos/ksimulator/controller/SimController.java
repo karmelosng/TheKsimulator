@@ -110,13 +110,31 @@ public class SimController {
         dummyState.notifyObservers(tempObject);
 
     }
-
+      public void createUndoRedoFile() {
+      File uRedoFile = new File("logger.klog");
+      if(uRedoFile.exists()){
+          try {
+              // if file already exists , delete file  and start a new one afresh
+                  uRedoFile.delete();
+                  uRedoFile.createNewFile();
+          } catch (IOException ex) {
+              Logger.getLogger(SimController.class.getName()).log(Level.SEVERE, null, ex);
+          }
+      }
+      else{
+          try {
+              uRedoFile.createNewFile();
+          } catch (IOException ex) {
+              Logger.getLogger(SimController.class.getName()).log(Level.SEVERE, null, ex);
+          }
+      }
+      }
     public void createModification(String componentString, String usernString, String opString, long timeL, String point) {
         String header = "<" + componentString + ">" + ",";
         header += usernString + "," + timeL + "," + point + "," + opString + "\n";
 
         try {
-            FileOutputStream fos = new FileOutputStream("C:\\work.txt", true);
+            FileOutputStream fos = new FileOutputStream("logger.klog", true);
             fos.write(header.getBytes());
             fos.close();
         } catch (FileNotFoundException ex) {
@@ -195,7 +213,7 @@ public class SimController {
     public void splitUndoRedoLog() {
 
         try {
-            String content = FileUtils.readFileToString(new File("C:\\work.txt"));
+            String content = FileUtils.readFileToString(new File("logger.klog"));
             String[] split = content.split("\n");
 
 
@@ -1425,6 +1443,10 @@ public class SimController {
 
     public void setDummyState(SimStateNull dummyState) {
         this.dummyState = dummyState;
+    }
+
+    public void disableRedoUndoItem() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 } //End Of Class Sim Controller
 
