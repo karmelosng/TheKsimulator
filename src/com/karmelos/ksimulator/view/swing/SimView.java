@@ -1271,7 +1271,8 @@ public class SimView extends javax.swing.JFrame implements Observer {
     }//GEN-LAST:event_exitItemActionPerformed
 
     private void redoItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_redoItemActionPerformed
-        // TODO add your handling code here:
+        SimComponent redoAction = controller.redoAction();
+     
     }//GEN-LAST:event_redoItemActionPerformed
 
     private void tipsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tipsItemActionPerformed
@@ -2083,6 +2084,13 @@ public class SimView extends javax.swing.JFrame implements Observer {
             //temp.setSize(openPanel.getSize());
             temp.setVisible(true);
             controller.setInstigClear(false);
+
+        }
+        else if (directive.equals("deleteUndo")) {
+      SimComponent sC = (SimComponent) updates[1];
+            defaultListModelAvailable.removeElement(sC);
+            defaultListModelUsed.addElement(sC);
+            droppablePanel.repaint();
 
         } else if (directive.equals("OpenComponent")) {
 

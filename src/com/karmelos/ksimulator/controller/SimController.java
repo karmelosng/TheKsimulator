@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -87,7 +88,7 @@ public class SimController {
     Map<Long, String> componentLocation = new LinkedHashMap<Long, String>();
     Map<Long, String> componentOperation = new LinkedHashMap<Long, String>();
     Stack<Long> undoStack = new Stack<Long>();
-    Queue<Long> redoQueue = new ArrayDeque<Long>();
+    Stack<Long> redoQueue = new Stack<Long>();
 
     public SimController() {
         // if starttSession is true. means a session has started, else dunmmystate
@@ -161,6 +162,20 @@ public class SimController {
         sPointTemp.setTopY(Double.parseDouble(splitLocate[1]));
         return sPointTemp;
     }
+    
+  public SimComponent searchAvailableComponentByString(String literalName){
+        ListIterator<SimComponent> listIterator = getState().getAvailableComponents().listIterator();
+       
+       SimComponent popped = null; 
+    while(listIterator.hasNext()){
+     SimComponent sC = listIterator.next();
+      if(sC.getComponentName().equalsIgnoreCase(literalName)){
+       popped = sC;
+      }
+    
+     }
+    return popped;
+  }
   public SimComponent searchPlacedComponentByString(String literalName){
         Set<SimComponent> keySet = getState().getPlacedComponents().keySet();
         Iterator<SimComponent> iterator = keySet.iterator();
@@ -190,14 +205,37 @@ public class SimController {
     // Main Reconfig here for Working Out Redraw
         // Firstly get the name of popped SimComponent
        Long popped = undoStack.pop();
+        String searchOperationMaps = searchOperationMaps(popped);
         SimComponent searchPlacedComponentByString = searchPlacedComponentByString(searchNameMaps(popped));
-        reDrawMovements(searchPlacedComponentByString, popped);
-        redoQueue.add(popped);
+        if(searchOperationMaps.equalsIgnoreCase("drop")){
+             reDrawMovements(searchPlacedComponentByString, popped);
+        }
+        else if(searchOperationMaps.equalsIgnoreCase("dragged")){
+         reDrawMovements(searchPlacedComponentByString, popped);
+        }
+        else if(searchOperationMaps.equalsIgnoreCase("deleted")){
+           SimComponent searchAvailableComponentByString = searchAvailableComponentByString(searchNameMaps(popped));
+           //remove from available
+           state.getPlacedComponents().put(searchAvailableComponentByString, searchLocationMaps(popped));
+          
+          Object[] tempObject = new Object[2];
+            tempObject[0] = "deleteUndo";
+            tempObject[1] = searchAvailableComponentByString;
+            state.setChanged();
+            state.notifyObservers(tempObject);
+        }
+       
+        redoQueue.push(popped);
         return searchPlacedComponentByString.getDescription();
 
     }
 
-    public void redoAction() {
+    public SimComponent redoAction() {
+        Long polled = redoQueue.pop();
+        SimComponent searchPlacedComponentByString = searchPlacedComponentByString(searchNameMaps(polled));
+        
+        reDrawMovements(searchPlacedComponentByString, polled);
+        return searchPlacedComponentByString;
     }
 
     public void fillStack() {
