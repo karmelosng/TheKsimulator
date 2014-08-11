@@ -15,6 +15,7 @@ import com.karmelos.ksimulator.model.SimModuleType;
 import com.karmelos.ksimulator.model.SimUser;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
@@ -1270,7 +1271,7 @@ public class AdminView extends javax.swing.JFrame {
     }//GEN-LAST:event_createComponentButtActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        OkCancelOption okcancel = new OkCancelOption(this, "Are you sure you want to exit?");
+        OkCancelOption okcancel = new OkCancelOption(this, "KSimulator");
         okcancel.setLabel1("Please make sure you save all changes. Do you still want to exit?");
         okcancel.setSize(400, 150);
         boolean response = okcancel.showDialog();
@@ -1368,7 +1369,7 @@ public class AdminView extends javax.swing.JFrame {
             newUser.setMiddleName(middleText.getText());
             if (!passText.getText().isEmpty()) {
                 if (listOfUsers.isEnabled() == true) {
-                    OkCancelOption okcancel = new OkCancelOption(this, "Are you sure?");
+                    OkCancelOption okcancel = new OkCancelOption(this, "KSimulator");
                     okcancel.setLabel1("Are you sure to replace password");
                     boolean response = okcancel.showDialog();
                     if (response) {
@@ -1390,7 +1391,7 @@ public class AdminView extends javax.swing.JFrame {
                 createUser.setText("Create User");
                 isSave = false;
             } else {
-                OkCancelOption okCancel = new OkCancelOption(this, "Are you sure of these changes?");
+                OkCancelOption okCancel = new OkCancelOption(this, "Ksimulator");
                 okCancel.setLabel1("Are you sure of these changes?");
                 boolean response = okCancel.showDialog();
                 if (response) {
@@ -1474,7 +1475,7 @@ public class AdminView extends javax.swing.JFrame {
                 isSave = false;
 
             } else {
-                OkCancelOption okCancelOption = new OkCancelOption(this, "Are you sure of these changes?");
+                OkCancelOption okCancelOption = new OkCancelOption(this, "KSimulator");
                 okCancelOption.setLabel1("Are you sure of these changes?");
                 boolean response = okCancelOption.showDialog();
                 if (response) {
@@ -1544,7 +1545,7 @@ public class AdminView extends javax.swing.JFrame {
                 moduleCombo.setEnabled(true);
                 isSave = false;
             } else {
-                OkCancelOption ok = new OkCancelOption(this, "Are you sure of these changes?");
+                OkCancelOption ok = new OkCancelOption(this, "KSimulator");
                 ok.setLabel1("Are you sure of these changes?");
                 boolean response = ok.showDialog();
                 if (response) {

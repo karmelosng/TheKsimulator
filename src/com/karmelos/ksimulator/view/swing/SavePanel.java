@@ -4,8 +4,8 @@
  */
 package com.karmelos.ksimulator.view.swing;
 
+import com.karmelos.ksimulator.controller.SimController;
 import com.karmelos.ksimulator.jdialogs.OkCancelOption;
-import com.karmelos.ksimulator.jdialogs.OkOption;
 import com.karmelos.ksimulator.model.SimComponent;
 import com.karmelos.ksimulator.model.SimLocationPointId;
 import com.karmelos.ksimulator.model.SimPoint;
@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
@@ -24,7 +23,6 @@ import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 /**
@@ -163,7 +161,7 @@ public class SavePanel extends javax.swing.JPanel {
 
         rwStatus.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Read Only", "Read and Write" }));
 
-        continueSaveButton.setText(">>>CONTINUE");
+        continueSaveButton.setText("CONTINUE");
         continueSaveButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 continueSaveButtonMouseClicked(evt);
@@ -227,17 +225,18 @@ public class SavePanel extends javax.swing.JPanel {
             rwStats = true;
         }
      
-      int response = JOptionPane.showConfirmDialog(this, "Are You Sure of These Settings?", null, JOptionPane.OK_CANCEL_OPTION);
+//      int response = JOptionPane.showConfirmDialog(this, "Are You Sure of These Settings?", null, JOptionPane.OK_CANCEL_OPTION);
         
-//        OkCancelOption ok_c = new OkCancelOption(null, "Are you sure");
-//        ok_c.setLabel1("Are You Sure of These Settings?");
-//      boolean response = ok_c.showDialog();
+        OkCancelOption ok_c = new OkCancelOption(null, "KSimulator");
+        ok_c.setLabel1("Are You Sure of These Settings?");
+        ok_c.setSize(250, 100);
+      boolean response = ok_c.showDialog();
         wrk.repaint();
 
         SimState stateLocal = wrk.getController().getState();
          Map<SimComponent,SimPoint> tempMap = stateLocal.getPlacedComponents();
         
-        if (response==JOptionPane.OK_OPTION) {
+        if (response) {
             
  
             // for fresh Save get all info first
@@ -250,7 +249,7 @@ public class SavePanel extends javax.swing.JPanel {
                 stateLocal.setPlacedComponents(null);
                 stateLocal.setSavedAt(convertedDate);
                  wrk.save();
-                     
+                     wrk.getController().setSave(SimController.SaveState.Saved);
                   
                // create SimPoints and merge with that state id               
                SimState[] fetchSessions = wrk.getController().fetchSessions(false);              
@@ -285,6 +284,7 @@ public class SavePanel extends javax.swing.JPanel {
                 wrk.getController().setDropOccured(false);
                 wrk.getController().setFirstSave(false);
                  wrk.getController().afterFirstSaveReservoirCollector();
+                 wrk.getController().setSave(SimController.SaveState.Saved);
                 // wrk.getController().setKeepOpen(rwStats);
                 wrk.repaint();
                 if(wrk.getController().isInstigClear()  ){

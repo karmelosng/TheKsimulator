@@ -46,10 +46,10 @@ public class View implements ApplicationListener {
       // Create ModelBatch that will render all models using a camera
       modelBatch = new ModelBatch(); 
       // Create a camera and point it to our model
-      camera = new PerspectiveCamera(85, 500, 500);
-      camera.position.set(1,1, 1000);
+      camera = new PerspectiveCamera(85, 0, 0);
+      camera.position.set(1,1, 1150);
       camera.lookAt(0, 0, 0);
-       camera.near = 500f;
+       camera.near = 100f;
       camera.far =2000f;
       camera.update();
  
@@ -97,7 +97,8 @@ public class View implements ApplicationListener {
       // Clear the viewport
      // Gdx.gl.glViewport(0, 0, screenWidth, screenHeight);
      Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-     Gdx.gl.glClearColor(0.55f, 0, 0, 1.0f);
+//     Gdx.gl.glClearColor(0.55f, 0, 0, 1.0f);
+     Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
       // Draw all model instances using the camera
       modelBatch.begin(camera);
       modelBatch.render(instances, environment);

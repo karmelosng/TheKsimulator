@@ -26,8 +26,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,7 +35,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
@@ -47,7 +46,6 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import org.apache.commons.io.FileUtils;
 
 // Minor Change in Code: Creates Two Entity Manangers ,One to retrieve
@@ -90,6 +88,20 @@ public class SimController {
     Stack<Long> undoStack = new Stack<Long>();
     Stack<Long> redoQueue = new Stack<Long>();
 
+    public enum SaveState {
+
+        Saved, NotSaved
+    }
+    private SaveState stateSave;
+
+    public SaveState getSaved() {
+        return stateSave;
+    }
+
+    public void setSave(SaveState stateSave) {
+        this.stateSave = stateSave;
+    }
+
     public SimController() {
         // if starttSession is true. means a session has started, else dunmmystate
         dummyState = new SimStateNull();
@@ -99,6 +111,7 @@ public class SimController {
         entityManagerfactory = Persistence.createEntityManagerFactory("Access", LocalProperty);
         entityManager = entityManagerfactory.createEntityManager();
         instantiateServerEntityManager();
+        setSave(SaveState.NotSaved);
 
     }
 
@@ -111,31 +124,43 @@ public class SimController {
         dummyState.notifyObservers(tempObject);
 
     }
-      public void createUndoRedoFile() {
-      File uRedoFile = new File("logger.klog");
-      if(uRedoFile.exists()){
-          try {
-              // if file already exists , delete file  and start a new one afresh
-                  uRedoFile.delete();
-                  uRedoFile.createNewFile();
-          } catch (IOException ex) {
-              Logger.getLogger(SimController.class.getName()).log(Level.SEVERE, null, ex);
-          }
-      }
-      else{
-          try {
-              uRedoFile.createNewFile();
-          } catch (IOException ex) {
-              Logger.getLogger(SimController.class.getName()).log(Level.SEVERE, null, ex);
-          }
-      }
-      }
-    public void createModification(String componentString, String usernString, String opString, long timeL, String point) {
+
+    public void createUndoRedoFile(String url) {
+       // This function does the simple workof deleting and arranging logger files
+        File uRedoFile = new File(url);
+        
+        if (uRedoFile.exists()) {
+            try {
+                // if file already exists , delete file  and start a new one afresh
+                uRedoFile.delete();
+                uRedoFile.createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(SimController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            try {
+                uRedoFile.createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(SimController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+   public void appendLoggerOpen(){
+        // This method does the sole job of  getting just the position os simpoints of opened components
+        Map<SimComponent, SimPoint> placedComponents = state.getPlacedComponents();
+        Set<SimComponent> keySet = placedComponents.keySet();
+        Iterator<SimComponent> itera =keySet.iterator();
+        while(itera.hasNext()){
+        SimComponent sC = itera.next();
+        createModification("guestlogger.klog",sC.getComponentName(), state.getSimUser().getUsername(), "opened", System.currentTimeMillis(), placedComponents.get(sC).toString());
+        }
+   }
+    public void createModification(String fileUrl,String componentString, String usernString, String opString, long timeL, String point) {
         String header = "<" + componentString + ">" + ",";
         header += usernString + "," + timeL + "," + point + "," + opString + "\n";
 
         try {
-            FileOutputStream fos = new FileOutputStream("logger.klog", true);
+            FileOutputStream fos = new FileOutputStream(fileUrl, true);
             fos.write(header.getBytes());
             fos.close();
         } catch (FileNotFoundException ex) {
@@ -162,69 +187,69 @@ public class SimController {
         sPointTemp.setTopY(Double.parseDouble(splitLocate[1]));
         return sPointTemp;
     }
-    
-  public SimComponent searchAvailableComponentByString(String literalName){
+
+    public SimComponent searchAvailableComponentByString(String literalName) {
         ListIterator<SimComponent> listIterator = getState().getAvailableComponents().listIterator();
-       
-       SimComponent popped = null; 
-    while(listIterator.hasNext()){
-     SimComponent sC = listIterator.next();
-      if(sC.getComponentName().equalsIgnoreCase(literalName)){
-       popped = sC;
-      }
-    
-     }
-    return popped;
-  }
-  public SimComponent searchPlacedComponentByString(String literalName){
+
+        SimComponent popped = null;
+        while (listIterator.hasNext()) {
+            SimComponent sC = listIterator.next();
+            if (sC.getComponentName().equalsIgnoreCase(literalName)) {
+                popped = sC;
+            }
+
+        }
+        return popped;
+    }
+
+    public SimComponent searchPlacedComponentByString(String literalName) {
         Set<SimComponent> keySet = getState().getPlacedComponents().keySet();
         Iterator<SimComponent> iterator = keySet.iterator();
-       SimComponent popped = null; 
-    while(iterator.hasNext()){
-     SimComponent sC = iterator.next();
-      if(sC.getComponentName().equalsIgnoreCase(literalName)){
-       popped = sC;
-      }
-    
-     }
-    return popped;
-  }
-  
-  public void  reDrawMovements(SimComponent designed,Long idTiming){
+        SimComponent popped = null;
+        while (iterator.hasNext()) {
+            SimComponent sC = iterator.next();
+            if (sC.getComponentName().equalsIgnoreCase(literalName)) {
+                popped = sC;
+            }
+
+        }
+        return popped;
+    }
+
+    public void reDrawMovements(SimComponent designed, Long idTiming) {
         SimPoint get = getState().getPlacedComponents().get(designed);
         SimPoint searchLocationMaps = searchLocationMaps(idTiming);
         get.setTopX(searchLocationMaps.getTopX());
-         get.setTopY(searchLocationMaps.getTopY());
-         // use the SimState Observer pattern to Change View
-         Object[] tempObject = new Object[2];
-            tempObject[0] = "Undo";
-            state.setChanged();
-            state.notifyObservers(tempObject);
+        get.setTopY(searchLocationMaps.getTopY());
+        // use the SimState Observer pattern to Change View
+        Object[] tempObject = new Object[2];
+        tempObject[0] = "Undo";
+        state.setChanged();
+        state.notifyObservers(tempObject);
     }
+
     public String undoAction() {
-    // Main Reconfig here for Working Out Redraw
+        // Main Reconfig here for Working Out Redraw
         // Firstly get the name of popped SimComponent
-       Long popped = undoStack.pop();
+        Long popped = undoStack.pop();
         String searchOperationMaps = searchOperationMaps(popped);
         SimComponent searchPlacedComponentByString = searchPlacedComponentByString(searchNameMaps(popped));
-        if(searchOperationMaps.equalsIgnoreCase("drop")){
-             reDrawMovements(searchPlacedComponentByString, popped);
-        }
-        else if(searchOperationMaps.equalsIgnoreCase("dragged")){
-         reDrawMovements(searchPlacedComponentByString, popped);
-        }
-        else if(searchOperationMaps.equalsIgnoreCase("deleted")){
-           SimComponent searchAvailableComponentByString = searchAvailableComponentByString(searchNameMaps(popped));
-           //remove from available
-           state.getPlacedComponents().put(searchAvailableComponentByString, searchLocationMaps(popped));
-          
-          Object[] tempObject = new Object[2];
+        if (searchOperationMaps.equalsIgnoreCase("drop")) {
+            reDrawMovements(searchPlacedComponentByString, popped);
+        } else if (searchOperationMaps.equalsIgnoreCase("dragged")) {
+            reDrawMovements(searchPlacedComponentByString, popped);
+        } else if (searchOperationMaps.equalsIgnoreCase("deleted")) {
+            SimComponent searchAvailableComponentByString = searchAvailableComponentByString(searchNameMaps(popped));
+            //remove from available
+            state.getPlacedComponents().put(searchAvailableComponentByString, searchLocationMaps(popped));
+
+            Object[] tempObject = new Object[2];
             tempObject[0] = "deleteUndo";
             tempObject[1] = searchAvailableComponentByString;
             state.setChanged();
             state.notifyObservers(tempObject);
         }
-       
+
         redoQueue.push(popped);
         return searchPlacedComponentByString.getDescription();
 
@@ -233,7 +258,7 @@ public class SimController {
     public SimComponent redoAction() {
         Long polled = redoQueue.pop();
         SimComponent searchPlacedComponentByString = searchPlacedComponentByString(searchNameMaps(polled));
-        
+
         reDrawMovements(searchPlacedComponentByString, polled);
         return searchPlacedComponentByString;
     }
@@ -248,10 +273,10 @@ public class SimController {
 
     }
 
-    public void splitUndoRedoLog() {
+    public void splitUndoRedoLog(String file) {
 
         try {
-            String content = FileUtils.readFileToString(new File("logger.klog"));
+            String content = FileUtils.readFileToString(new File(file));
             String[] split = content.split("\n");
 
 

@@ -67,7 +67,6 @@ import javax.imageio.ImageIO;
 import javax.media.j3d.BranchGroup;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -82,6 +81,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
@@ -140,6 +140,8 @@ public class SimView extends javax.swing.JFrame implements Observer {
         // addObserver to the initll 
         controller.getDummyState().addObserver(this);
         controller.getDummyState().notifyObservers();
+        
+        
 
         //check Server Availability Thread is started here
         try {
@@ -199,6 +201,8 @@ public class SimView extends javax.swing.JFrame implements Observer {
         //Add Listeners to the Generated VectorList of Checboxes
         AttachListener(listOfLabels);
 
+        if(controller.getState() == null){
+        }
     }
 
     public JLabel getSessionDescLabel() {
@@ -379,7 +383,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
         jScrollPane2 = new javax.swing.JScrollPane();
         usedComponentsList = new javax.swing.JList();
         deleteOption = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        removeUsed = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         moduleCombo = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
@@ -527,7 +531,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
         logiconLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/locked24.png"))); // NOI18N
         logiconLabel.setToolTipText("Login Status");
 
-        newSubMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/new24.png"))); // NOI18N
+        newSubMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/newFile24.png"))); // NOI18N
         newSubMenu.setToolTipText("Start New Session");
         newSubMenu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -545,8 +549,13 @@ public class SimView extends javax.swing.JFrame implements Observer {
 
         redoSubMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/redo24.png"))); // NOI18N
         redoSubMenu.setToolTipText("Redo");
+        redoSubMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                redoSubMenuMouseClicked(evt);
+            }
+        });
 
-        clearWorkSpaceSubMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/clearws24.png"))); // NOI18N
+        clearWorkSpaceSubMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/cleanCurrentProject24.gif"))); // NOI18N
         clearWorkSpaceSubMenu.setToolTipText("Clear Workspace");
         clearWorkSpaceSubMenu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -554,7 +563,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
             }
         });
 
-        open.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/openIcon24.png"))); // NOI18N
+        open.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/openProject24.png"))); // NOI18N
         open.setToolTipText("Open Saved Session");
         open.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -562,7 +571,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
             }
         });
 
-        saveShortcut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/saveIcon24.png"))); // NOI18N
+        saveShortcut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/save_results24.png"))); // NOI18N
         saveShortcut.setToolTipText("Save Session");
         saveShortcut.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -588,6 +597,11 @@ public class SimView extends javax.swing.JFrame implements Observer {
 
         undoSubMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/undo24.png"))); // NOI18N
         undoSubMenu.setToolTipText("Undo");
+        undoSubMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                undoSubMenuMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -655,7 +669,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(763, 763, 763)
                         .addComponent(updatechecked)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 478, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 488, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -667,7 +681,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(serverNotification, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
                         .addComponent(logiconLabel)
                         .addGap(6, 6, 6)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -675,8 +689,8 @@ public class SimView extends javax.swing.JFrame implements Observer {
                         .addComponent(jLabel5)
                         .addGap(41, 41, 41))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(LoggedLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addComponent(LoggedLabel)
+                        .addGap(86, 86, 86))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -775,11 +789,11 @@ public class SimView extends javax.swing.JFrame implements Observer {
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/trashsmall.png"))); // NOI18N
-        jLabel3.setText("<HTML><U>Remove Component</U></HTML>");
-        jLabel3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel3.setIconTextGap(2);
+        removeUsed.setFont(new java.awt.Font("Trebuchet MS", 0, 12)); // NOI18N
+        removeUsed.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/cleanProject24.gif"))); // NOI18N
+        removeUsed.setText("<HTML><U>Remove Component</U></HTML>");
+        removeUsed.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        removeUsed.setIconTextGap(2);
 
         javax.swing.GroupLayout deleteOptionLayout = new javax.swing.GroupLayout(deleteOption);
         deleteOption.setLayout(deleteOptionLayout);
@@ -787,14 +801,14 @@ public class SimView extends javax.swing.JFrame implements Observer {
             deleteOptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(deleteOptionLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(removeUsed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         deleteOptionLayout.setVerticalGroup(
             deleteOptionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(deleteOptionLayout.createSequentialGroup()
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 7, Short.MAX_VALUE))
+                .addComponent(removeUsed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
@@ -806,7 +820,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addGap(0, 51, Short.MAX_VALUE)
+                        .addGap(0, 43, Short.MAX_VALUE)
                         .addComponent(deleteOption, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -932,7 +946,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
                         .addContainerGap()
                         .addComponent(workSpacePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, simulationPanelLayout.createSequentialGroup()
-                        .addComponent(sessionDescritionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
+                        .addComponent(sessionDescritionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
                         .addGap(299, 299, 299)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1169,7 +1183,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
                 .addGap(18, 18, 18)
                 .addComponent(componentListPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(simulationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1070, Short.MAX_VALUE)
+                .addComponent(simulationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1078, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -1180,7 +1194,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(componentListPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 675, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(simulationPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 662, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 11, Short.MAX_VALUE))
+                .addGap(0, 13, Short.MAX_VALUE))
         );
 
         pack();
@@ -1207,65 +1221,113 @@ public class SimView extends javax.swing.JFrame implements Observer {
 
     //action performed when the Open menu item is clicked
     private void openItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openItemActionPerformed
-
+         
         if (controller.getDropOccured()) {
-            //Add Save panel and then Open new
-            try {
-                controller.getState().setSimUser(getPresentSimUser());
-                controller.setInstigClear(true);
-                PopUpFrame puf = popupFrame.addSavePanel(savePanel, this);
-                puf.setIconImage(ImageIO.read(this.getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/kicon.png")));
-                puf.setVisible(true);
-            } catch (IOException ex) {
-                Logger.getLogger(SimView.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            //PopUp the openPanel After clearing all
+            System.out.println("Drop just occurred");
+//            Add Save panel and then Open new
+//            try {
+//                controller.getState().setSimUser(getPresentSimUser());
+//                controller.setInstigClear(true);
+//                PopUpFrame puf = popupFrame.addSavePanel(savePanel, this);
+//                puf.setIconImage(ImageIO.read(this.getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/kicon.png")));
+//                savePanel.setSize(371, 300);
+//                puf.setSize(savePanel.getSize());
+//                puf.setVisible(true);
+//            } catch (IOException ex) {
+//                Logger.getLogger(SimView.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//            PopUp the openPanel After clearing all
 
         }
         if (getPresentSimUser() != null && controller.getState() == null) {
-            try {
-                // startSimulation();
-                PopUpFrame temp = popupFrame.addOpenPanel(openPanel, this);
-
-//                temp.setTitle("Open Saved Sessions");
+//            try {
+                System.out.println("user not null no simulation started");
+                 startSimulation();
+//                PopUpFrame temp = popupFrame.addOpenPanel(openPanel, this);
+//
+////                temp.setTitle("Open Saved Sessions");
 //                temp.setIconImage(ImageIO.read(this.getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/kicon.png")));
 //                temp.setVisible(true);
-                openPanel.setSize(300, 150);
-                temp.setTitle("KSimulator");
-                temp.setIconImage(ImageIO.read(this.getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/kicon.png")));
-                //temp.setSize(openPanel.getSize());
-                temp.setVisible(true);
-            } catch (IOException ex) {
-                Logger.getLogger(SimView.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else if (getPresentSimUser() == null && controller.getState() == null) {
+//                openPanel.setSize(300, 150);
+//                temp.setTitle("KSimulator");
+//                
+////                temp.setIconImage(ImageIO.read(this.getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/kicon.png")));
+//                //temp.setSize(openPanel.getSize());
+//                openPanel.refresh();
+//                temp.setVisible(true);
+//            } catch (IOException ex) {
+//                Logger.getLogger(SimView.class.getName()).log(Level.SEVERE, null, ex);
+                 openOpen();
+//            }
+        } else if ((getPresentSimUser() == null && controller.getState() == null) ||(getPresentSimUser() == null && controller.getState() != null)) {
+            System.out.println("user null cann t open");
 //            JOptionPane.showMessageDialog(null, "You cannot Open Sessions Since you arent a valid user!",
 //                    "Error", JOptionPane.OK_OPTION);
             OkOption ok = new OkOption(this, "KSimulator");
-            ok.setLabel1("You cannot open sessions since you arent a valid user");
+            ok.setLabel1("You cannot open sessions since you are not a valid user");
+            ok.setSize(350,100);
             ok.showDialog();
 
-        } else if (getPresentSimUser() == null && controller.getState() != null) {
-//            JOptionPane.showMessageDialog(null, "You are not   a User \n and \n A session is already ON!! Login Your Credentials",
-//                    "Error", JOptionPane.OK_OPTION);
-            OkOption ok = new OkOption(this, "KSimulator");
-            ok.setLabel1("Session already started! Save to continue");
-            ok.showDialog();
-
-        } else {
-//            JOptionPane.showMessageDialog(null, "Session Already Existing! save to Start",
-//                    "Error", JOptionPane.OK_OPTION);
-            OkOption ok = new OkOption(this, "KSimulator");
-            ok.setLabel1("Session already existing! Save to continue");
-            ok.showDialog();
-
+        } 
+        
+        else if(getPresentSimUser() != null && controller.getState() != null && controller.getSaved()==SimController.SaveState.Saved) {
+            
+            OkCancelOption okcancel = new OkCancelOption(this, "KSimulator");
+        okcancel.setLabel1("You are about to open a saved session, your current session will be cleared. Do you want to continue?");
+        okcancel.setSize(800, 100);
+        boolean response = okcancel.showDialog();
+        if(response){
+            openOpen();
+            
         }
 
+        }
+        else if(getPresentSimUser() != null && controller.getState() != null && controller.getSaved()==SimController.SaveState.NotSaved){
+            OkOption yesno = new OkOption(this, "KSimulator");
+            yesno.setLabel1("Please save your current session");
+            yesno.setSize(250, 100);
+             yesno.showDialog();
+                opensave();
+                
+            
+            
+        }
+        else{
+        OkOption not = new OkOption(this, "KSimulator");
+        not.setLabel1("Situation not anticipated");
+        not.setSize(200, 100);
+        not.showDialog();
+        }
         //open the file 
         // open();
 
     }//GEN-LAST:event_openItemActionPerformed
 //actionperormed when exit menu item is clicked
+    private void opensave(){
+        try {
+                PopUpFrame puff = popupFrame.addSavePanel(savePanel, this);
+                puff.setIconImage(ImageIO.read(this.getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/kicon.png")));
+                savePanel.setSize(371, 300);
+                puff.setTitle("KSimulator");
+                puff.setSize(savePanel.getSize());
+                puff.setVisible(true);
+            } catch (IOException ex) {
+                Logger.getLogger(SimView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }
+    private void openOpen(){
+        try {
+                    PopUpFrame pop = popupFrame.addOpenPanel(openPanel, this);
+                    pop.setIconImage(ImageIO.read(this.getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/kicon.png")));
+                    openPanel.setSize(400, 400);
+                    pop.setTitle("KSimulator");
+                    openPanel.refresh();
+                    pop.setSize(openPanel.getSize());
+                    pop.setVisible(true);
+                } catch (IOException ex) {
+                    Logger.getLogger(SimView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+    }
     private void exitItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitItemActionPerformed
         formWindowClosing(null);
     }//GEN-LAST:event_exitItemActionPerformed
@@ -1410,25 +1472,38 @@ public class SimView extends javax.swing.JFrame implements Observer {
                         controller.updateStatustext("No Components for " + tempSimModule.getModelName());
                         OkOption ok3 = new OkOption(this, "KSimulator");
                         ok3.setLabel1("No Components for " + tempSimModule.getModelName());
+                        ok3.setSize(350, 100);
                         ok3.showDialog();
                     }
 
                 }// inner IF 
             } // OuterIF
-            else {
+            else if(controller.getDropOccured() && controller.getSaved() == SimController.SaveState.NotSaved) {
 
 //            JOptionPane.showMessageDialog(null, "Simulation Has Started already!! u cant Make Module Changes Until u Exit or Save",
 //                    null, JOptionPane.OK_OPTION);
                 moduleCombo.setEnabled(false);
                 OkOption ok = new OkOption(this, "KSimulator");
                 ok.setLabel1("Simulation has started already!! You can not make module changes until you exit or save");
+                ok.setSize(600, 100);
                 ok.showDialog();
                 moduleCombo.setEnabled(false);
             }
 
-
+            else{
+            OkOption op = new OkOption(this, "KSimulator");
+            op.setLabel1("This situation was not anticipated");
+            op.setSize(250, 100);                                           
+            op.showDialog();
+            }
         }
-      controller.createUndoRedoFile();
+        if(controller.getSimUser() == null){ // not logged in User
+        controller.createUndoRedoFile("guestlogger.klog");
+        }
+        else{
+         controller.createUndoRedoFile("logger.klog");
+        }
+      
     }//GEN-LAST:event_moduleComboItemStateChanged
 
     private void availableCompListMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_availableCompListMouseEntered
@@ -1483,7 +1558,10 @@ public class SimView extends javax.swing.JFrame implements Observer {
             int index = l.locationToIndex(evt.getPoint());
             SimComponent temp = (SimComponent) defaultListModelUsed.getElementAt(index);
             try {
-                l.setComponentPopupMenu(new CustomisePopUp(true, temp));
+                l.setComponentPopupMenu(new CustomizeDeletePopup(temp,controller));
+                if(controller.getSaved() == SimController.SaveState.NotSaved){
+                    System.out.println("Not saved state");
+                }
             } catch (IOException ex) {
                 Logger.getLogger(SimView.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -1499,11 +1577,8 @@ public class SimView extends javax.swing.JFrame implements Observer {
         }
 
     }//GEN-LAST:event_usedComponentsListMouseClicked
-
-    private void newItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newItemActionPerformed
-
-        if (!controller.getDropOccured() && controller.getState() == null) {
-            setOnSaveClear(false);
+    private void makeNewSessionDialog(){
+    setOnSaveClear(false);
             descriptionDialog.setSize(600, 150);
             descriptionDialog.setTitle("KSimulator");
             try {
@@ -1514,41 +1589,97 @@ public class SimView extends javax.swing.JFrame implements Observer {
             descriptionDialog.setLocationRelativeTo(null);
             descriptionDialog.setVisible(true);
             descriptionDialog.getParent().setEnabled(false);
-
-        } else {
+         
+            
+    }
+    
+    private void newItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newItemActionPerformed
+        if (!controller.getDropOccured() && controller.getState() == null) {
+            makeNewSessionDialog();
+            
+        }
+        else if(controller.getDropOccured() && controller.getState() == null){
+            System.out.println(" drop and state is null");
+        makeNewSessionDialog();
+        }
+        else if(controller.getSaved() == SimController.SaveState.Saved){
+        OkCancelOption okcancel = new OkCancelOption(this, "KSimulator");
+        okcancel.setLabel1("You are about to start a new session, your current session will be cleared. Do you want to continue?");
+        okcancel.setSize(800, 100);
+        boolean response = okcancel.showDialog();
+        if(response){
+       makeNewSessionDialog();
+       
+        }
+        
+        }
+        else if(controller.getDropOccured() && controller.getState() == null){
+        OkCancelOption okcan = new OkCancelOption(this, "KSimulator"); 
+        okcan.setLabel1("Your current session will not be saved since you are not logged in");
+        okcan.setSize(400, 100);
+        }
+        else {
 //            JOptionPane.showMessageDialog(this, "Simulation already Started!! Save to Continue!",
 //                    null, JOptionPane.OK_OPTION);
-            OkOption ok_option = new OkOption(this, "KSimulator"
-                    + "");
-            ok_option.setMessage("Session already started!! Save to continue!");
+            System.out.println( "for drop "+controller.getDropOccured());
+            System.out.println("for  state"+controller.getState());
+            OkOption ok_option = new OkOption(this, "KSimulator");
+            ok_option.setMessage("Scenario not anticipated!");
+            ok_option.setSize(300, 100);
             ok_option.showDialog();
 
         }
+//        if(controller.getState()== null){
+//        if(controller.getSimUser()==null){
+//        makeNewSessionDialog();
+//        }
+//        else if(controller.getSimUser() != null){
+//        makeNewSessionDialog();
+//        }
+//        }
+//        else if(controller.getState() != null){
+//        if(controller.getSimUser() == null){
+//        YesNoOption yesno = new YesNoOption(this, "KSismulator");
+//        yesno.setLabel1("Your session will not be saved because you are not logged in. Will you like to save?");
+//        yesno.setSize(800, 100);
+//        boolean response = yesno.showDialog();
+//        if(response){
+////        open
+//        }
+//        }
+//        }
     }//GEN-LAST:event_newItemActionPerformed
 
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
         //flags on save, if no session started the click save brings an error message else saves session
         PopUpFrame popupFrameTemp;
         if (controller.getState() == null) {
+            System.out.println("No simulation");
 //            JOptionPane.showMessageDialog(this, "No Simulation Started!Click on New to Start",
 //                    null, JOptionPane.OK_OPTION);
             OkOption ok = new OkOption(this, "KSimulator");
             ok.setLabel1("No simulation started!Click on \"New\" to Start");
+            ok.setSize(350, 100);
             ok.showDialog();
         } else {
             if (getPresentSimUser() != null) {
-
+                System.out.println("logged Empty simulation");
                 //This COntrols  the save if/when the state placed components is empty
-                if (controller.getState().getPlacedComponents().size() == 0) {
-                    CancelOption cO = new CancelOption(this, "KSimulator || Empty Simulation Notice");
-                    cO.setLabel1("Please You Are Saving An Empty Simulation!");
+                if (controller.getState().getPlacedComponents().size() < 1) {
+                    CancelOption cO = new CancelOption(this, "KSimulator");
+                    cO.setLabel1("You cannot save an empty simulation");
+                    cO.setSize(300, 100);
                     cO.showDialog();
                 } else {
                     try {
                         controller.getState().setSimUser(getPresentSimUser());
                         popupFrameTemp = popupFrame.addSavePanel(savePanel, this);
+                        savePanel.setSize(371, 300);
                         popupFrameTemp.setIconImage(ImageIO.read(this.getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/kicon.png")));
+                        popupFrameTemp.setSize(savePanel.getSize());
                         popupFrameTemp.setVisible(true);
+                        controller.setSave(SimController.SaveState.Saved);
+                        System.out.println(controller.getSaved().toString());
                     } catch (IOException ex) {
                         Logger.getLogger(SimView.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -1559,10 +1690,13 @@ public class SimView extends javax.swing.JFrame implements Observer {
 //                        null, JOptionPane.OK_CANCEL_OPTION);
                 OkCancelOption ok_cancel = new OkCancelOption(this, "KSimulator");
                 ok_cancel.setLabel1("This user does not exist! Please login with your credentials");
+                ok_cancel.setSize(400, 100);
                 boolean response = ok_cancel.showDialog();
                 if (response) {
                     popupFrameTemp = popupFrame.addLoginPanel(loginPanel, this);
+                    loginPanel.setSize(380, 400);
                     popupFrame.setTitle("KSimulator");
+                    popupFrame.setSize(loginPanel.getSize());
                     popupFrameTemp.setVisible(true);
                 }
             }
@@ -1571,6 +1705,26 @@ public class SimView extends javax.swing.JFrame implements Observer {
 
     }//GEN-LAST:event_saveItemActionPerformed
 
+  private  void removeUsed(SimComponent sc, ActionEvent evt){
+   sc = (SimComponent) usedComponentsList.getSelectedValue();
+//        int index = usedComponentsList.locationToIndex(evt.getPoint());
+        if (!usedComponentsList.isSelectionEmpty()) {
+//            if (index > -1) {
+                // remove Elements from View
+                defaultListModelAvailable.addElement(sc);
+                defaultListModelUsed.removeElement(sc);
+
+                // remove Elements from model
+                controller.getState().getAvailableComponents().add(sc);
+                controller.getState().getUsedComponents().remove(sc);
+                controller.getState().getPlacedComponents().remove(sc);
+                droppablePanel.repaint();
+                controller.updateStatustext(sc.getComponentName() + " DELETED!");
+                deleteOption.setBackground(null);
+//            }
+        }
+   }
+    
     private void deleteOptionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteOptionMouseClicked
 
         //JList l = (JList) evt.getSource();
@@ -1585,11 +1739,17 @@ public class SimView extends javax.swing.JFrame implements Observer {
                 // remove Elements from model
                 Map<SimComponent, SimPoint> placedComponents = controller.getState().getPlacedComponents();
                 // register in undoRedoLog.xml before final delete
-
-                controller.createModification(sc.getComponentName(), controller.getSimUser().getFirstName(),
+                    if(controller.getSimUser() == null){ // whe a user isnt logged in
+                     controller.createModification("guestlogger.klog",sc.getComponentName(), "GUEST",
                         "deleted", System.currentTimeMillis(), new SimPoint(placedComponents.get(sc).getTopX(), placedComponents.get(sc).getTopY()).toString());
-
-                controller.splitUndoRedoLog();
+                     controller.splitUndoRedoLog("guestlogger.klog");
+                 }
+                 else{
+                  controller.createModification("logger.klog",sc.getComponentName(), controller.getSimUser().getFirstName(),
+                        "deleted", System.currentTimeMillis(), new SimPoint(placedComponents.get(sc).getTopX(), placedComponents.get(sc).getTopY()).toString());
+                     controller.splitUndoRedoLog("logger.klog");
+                 }
+               
                 controller.getState().getAvailableComponents().add(sc);
                 controller.getState().getUsedComponents().remove(sc);
                 controller.getState().getPlacedComponents().remove(sc);
@@ -1611,6 +1771,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
 //                    null, JOptionPane.CANCEL_OPTION);
             CancelOption cancel = new CancelOption(this, "KSimulator");
             cancel.setLabel1("Highlight Component To Delete First!");
+            cancel.setSize(250, 100);
             cancel.showDialog();
 
         } else {
@@ -1619,6 +1780,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
 //                    null, JOptionPane.CANCEL_OPTION);
             CancelOption cancel = new CancelOption(this, "KSimulator");
             cancel.setLabel1("No Component in the workspace");
+            cancel.setSize(150, 100);
             cancel.showDialog();
 
         }
@@ -1627,40 +1789,43 @@ public class SimView extends javax.swing.JFrame implements Observer {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
 
         droppablePanel.repaint();
-        if (controller.getState() == null) {
+        if (controller.getState() == null || controller.getSaved() ==SimController.SaveState.Saved ) {
 
             droppablePanel.repaint();
 //            int response = JOptionPane.showConfirmDialog(this, "Are You Sure You Want To close Application?",
 //                    "Close Ksimulator", JOptionPane.YES_NO_OPTION);
             YesNoOption closing = new YesNoOption(this, "KSimulator");
             closing.setLabel1("Are You Sure You Want To close\n Application?");
+            closing.setSize(300,100 );
             boolean response = closing.showDialog();
             if (response) {
                 exit();
                 System.exit(0);
             }
-        } else {
+        }
+        else if(controller.getState() != null && controller.getSaved() == SimController.SaveState.NotSaved){
 
             droppablePanel.repaint();
 //            int response = JOptionPane.showConfirmDialog(this, "Simulation Not saved Yet! Still want to Exit?",
 //                    "Close Ksimulator", JOptionPane.YES_NO_OPTION);
             YesNoOption closing = new YesNoOption(this, "KSimulator");
             closing.setLabel1("Session not saved yet! Still want to exit?");
+            closing.setSize(350, 100);
             boolean response = closing.showDialog();
             if (response) {
                 exit();
                 System.exit(0);
-            } else {
+            } 
+            else {
                 saveItemActionPerformed(null);
             }
 
         }
-
     }//GEN-LAST:event_formWindowClosing
 
     private void selectModuleTypeComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_selectModuleTypeComboItemStateChanged
-        loadingProgressBar.setVisible(true);
-        loadingProgressBar.setString("Ready to Load Scenes");
+//loadingProgressBar.setVisible(true);
+       // loadingProgressBar.setString("Ready to Load Scenes");
         JComboBox temp = (JComboBox) evt.getSource();
         int indexselected = temp.getSelectedIndex();
 
@@ -1684,7 +1849,13 @@ public class SimView extends javax.swing.JFrame implements Observer {
 //                    "Close Ksimulator", JOptionPane.YES_NO_OPTION);
             YesNoOption closing = new YesNoOption(this, "KSimulator");
             closing.setLabel1("Simulation not saved yet! Still want to Exit?");
+            closing.setSize(350, 100);
             boolean response = closing.showDialog();
+            if(response){
+                closing.dispose();
+            System.exit(0);
+            
+            }
         }
 
     }//GEN-LAST:event_selectModuleTypeComboItemStateChanged
@@ -1720,6 +1891,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
                 controller.updateStatustext("No Component Selected");
                 OkOption ok = new OkOption(this, "KSimulator");
                 ok.setLabel1("No Component Selected");
+                ok.setSize(200, 100);
                 ok.showDialog();
 
             }
@@ -1775,13 +1947,15 @@ public class SimView extends javax.swing.JFrame implements Observer {
 
         droppablePanel.repaint();
     }//GEN-LAST:event_licenseItemActionPerformed
-
-    private void descripDialogBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_descripDialogBtnActionPerformed
-        // if no description is typed, then dont remove Dialog
-
-        if (!descDialogTxt.getText().isEmpty()) {
-
-            startSimulation();
+    private void makeNewSession(){
+    if (!descDialogTxt.getText().isEmpty()) {
+   if(controller.getState() == null){
+            System.out.println("State is null b4 statrt");
+        }
+   else{System.out.println("State is not null b4 start");}
+            startSimulation();           
+            
+            
             controller.setLoginClear(false);
             controller.setClearAction(false);
             //setDescription here
@@ -1789,6 +1963,8 @@ public class SimView extends javax.swing.JFrame implements Observer {
             defaultListModelAvailable.clear();
             defaultListModelUsed.clear();
             selectModuleTypeCombo.removeAllItems();
+            moduleCombo.removeAllItems();
+            moduleCombo.setEnabled(false);
             controller.updateStatustext(null);
 
             // load first combobox
@@ -1812,6 +1988,12 @@ public class SimView extends javax.swing.JFrame implements Observer {
 
         }
 
+    }
+    
+    private void descripDialogBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_descripDialogBtnActionPerformed
+        // if no description is typed, then dont remove Dialog
+        makeNewSession();
+        
     }//GEN-LAST:event_descripDialogBtnActionPerformed
 
     private void descDialogTxtMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_descDialogTxtMouseClicked
@@ -1823,6 +2005,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
         cuDialog = new ChangeUserDialog(this, rerender);
         cuDialog.setController(controller);
         cuDialog.setSimView(this);
+//        if(cont)
         cuDialog.showDialog();
     }//GEN-LAST:event_LoggedLabelMouseClicked
 
@@ -1865,6 +2048,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
      if(controller.getState() == null){
          OkOption okOption = new OkOption(this, "ILLegal Operation");
          okOption.setLabel1("You Cant Do This Operation:\n REASON:: UnRegistered User");
+         okOption.setSize(400, 100);
          okOption.showDialog();
         }
      else{
@@ -1873,6 +2057,16 @@ public class SimView extends javax.swing.JFrame implements Observer {
        
        // JOptionPane.showMessageDialog(this, lng);        // TODO add your handling code here:
     }//GEN-LAST:event_undoItemActionPerformed
+
+    private void undoSubMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_undoSubMenuMouseClicked
+        // TODO add your handling code here:
+        undoItemActionPerformed(null);
+    }//GEN-LAST:event_undoSubMenuMouseClicked
+
+    private void redoSubMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_redoSubMenuMouseClicked
+        // TODO add your handling code here:
+        redoItemActionPerformed(null);
+    }//GEN-LAST:event_redoSubMenuMouseClicked
 
     public void init() throws IOException {
         droppablePanel.setController(controller);
@@ -1915,7 +2109,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
             reloadLoginImage(false);
         }
 
-        LoggedLabel.setText("  " + System.getProperty("user.name"));// and also setIcon!!
+        LoggedLabel.setText("GUEST");// and also setIcon!!
 //        SimState[]  recentStates = controller.fetchSessions(true);
 //              for(int i=0;i<recentStates.length;i++){           
 //              recentMenu.add(new JMenu(recentStates[i].toString()));              
@@ -1929,10 +2123,10 @@ public class SimView extends javax.swing.JFrame implements Observer {
     }
 
     public void startSimulation() {
-        //
 
         controller.startSimulation(null, "hjgfshjgijkhsdf");
         controller.getState().setSimUser(getPresentSimUser());
+        controller.setDropOccured(false);
 
         //TODO Init JLists availableComponents and usedComponents
         controller.getState().addObserver(this);
@@ -2123,6 +2317,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
             SimUser sUser = (SimUser) updates[1];
             YesNoOption yes_no = new YesNoOption(this, "KSimulator");
             yes_no.setLabel1("Do You Want To Clear Available Session?");
+            yes_no.setSize(300, 100);
             boolean response = yes_no.showDialog();
             if (response) {
                 controller.setSimUser(sUser);
@@ -2140,9 +2335,10 @@ public class SimView extends javax.swing.JFrame implements Observer {
                 defaultListModelAvailable.removeAllElements();
                 defaultListModelUsed.removeAllElements();
                 droppablePanel.repaint();
-                controller.updateStatustext("Please Start a New Session To Continue");
+//                controller.updateStatustext("Please Start a New Session To Continue");
                 OkOption ok = new OkOption(this, "KSimulator");
                 ok.setLabel1("Please Start a New Session To Continue");
+                ok.setSize(300, 100);
                 ok.showDialog();
                 controller.setState(null);
                 moduleCombo.removeAllItems();
@@ -2154,8 +2350,10 @@ public class SimView extends javax.swing.JFrame implements Observer {
 //            int response= JOptionPane.showConfirmDialog(null,"Do You Want To Clear Available Session?","Clear Session?",JOptionPane.YES_NO_OPTION);
             YesNoOption yes_no = new YesNoOption(this, "KSimulator");
             yes_no.setLabel1("Do You Want To Clear Available Session?");
+            yes_no.setSize(300, 100);
             boolean response = yes_no.showDialog();
             if (response) {
+//                controller.getDummyState().notifyObservers();
                 getLoggedLabel().setText(homeUser);
                 setPresentSimUser(null);
                 descDialogTxt.setText(null);
@@ -2163,13 +2361,19 @@ public class SimView extends javax.swing.JFrame implements Observer {
                 controller.setLoginClear(true);
                 defaultListModelAvailable.removeAllElements();
                 defaultListModelUsed.removeAllElements();
+                moduleCombo.removeAllItems();
+                moduleCombo.setEnabled(false);
+                selectModuleTypeCombo.removeAllItems();
+                selectModuleTypeCombo.setEnabled(false);
                 droppablePanel.repaint();
-                controller.updateStatustext("Please Start a New Session To Continue");
+//                controller.updateStatustext("Please Start a New Session To Continue");
                 OkOption ok = new OkOption(this, "KSimulator");
                 ok.setLabel1("Please Start a New Session To Continue");
+                ok.setSize(300, 100);
                 ok.showDialog();
                 controller.setState(null);
-                moduleCombo.removeAllItems();
+                
+                
 
 
             }
@@ -2183,6 +2387,58 @@ public class SimView extends javax.swing.JFrame implements Observer {
     public void populateSuccessorLocation(SimComponent sc) {
     }
 
+    
+    class CustomizeDeletePopup extends JPopupMenu{
+        JMenuItem aboutItem, removeItem, helpItem;
+        JPanel componentInfoPanel;
+        JLabel componentLabel;
+        JTextArea descriptionText;
+        
+    public CustomizeDeletePopup(final SimComponent comp, final SimController controller) throws IOException{
+//      final SimComponent  comp = (SimComponent) usedComponentsList.getSelectedValue();
+        componentInfoPanel = new JPanel();
+        componentLabel = new JLabel();
+        componentLabel.setIcon(comp.getDescriptionIconImage());
+        descriptionText = new JTextArea();
+        descriptionText.setLineWrap(true);
+        descriptionText.setColumns(22);
+        descriptionText.setText(comp.getDescription());
+        descriptionText.setEditable(false);
+        
+        componentInfoPanel.add(componentLabel);
+        componentInfoPanel.add(descriptionText);
+    aboutItem = new JMenuItem("About "+comp.getComponentName());
+    
+    aboutItem.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent event){
+        
+               try {
+                        PopUpFrame custPopupFrame = new PopUpFrame();
+                        custPopupFrame.addPanels(componentInfoPanel);
+                        custPopupFrame.setIconImage(ImageIO.read(this.getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/kicon.png")));
+                        custPopupFrame.setVisible(true);
+                    } catch (IOException ex) {
+                        Logger.getLogger(CustomizeDeletePopup.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+        }
+});
+    removeItem = new JMenuItem("Remove");
+    
+    removeItem.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent event){
+            removeUsed(comp, event);
+            controller.setSave(SimController.SaveState.NotSaved);
+        }
+});
+    
+    helpItem = new JMenuItem("Help");
+    
+        add(aboutItem);
+        addSeparator();
+        add(removeItem);
+    
+    }
+    }
     /**
      * @param args the command line arguments
      */
@@ -2220,7 +2476,6 @@ public class SimView extends javax.swing.JFrame implements Observer {
     private javax.swing.JLabel infoShortcut;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -2253,6 +2508,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
     private javax.swing.JMenu recentMenu;
     private javax.swing.JMenuItem redoItem;
     private javax.swing.JLabel redoSubMenu;
+    private javax.swing.JLabel removeUsed;
     private javax.swing.JMenuItem saveItem;
     private javax.swing.JLabel saveShortcut;
     private javax.swing.JComboBox selectModuleTypeCombo;
@@ -2368,6 +2624,7 @@ class DnDpaneldrop extends TransferHandler implements DropTargetListener {
 //       JOptionPane.showConfirmDialog(null, "You Have Dragged Component Out of Drop Area!!", "Drag Out Of Worspace Alert", JOptionPane.OK_OPTION);
         OkOption ok = new OkOption(null, "KSimulator");
         ok.setLabel1("Cannot place component outside Workspace area");
+        ok.setSize(350, 100);
         ok.showDialog();
     }
 
@@ -2375,9 +2632,10 @@ class DnDpaneldrop extends TransferHandler implements DropTargetListener {
     @Override
     public void drop(DropTargetDropEvent dtde) {
         try {
+            System.out.println("Dropped");
             frameTemp.setCursor(null);
             simController.setEmptyPlacedComponent(false);
-
+            simController.setSave(SimController.SaveState.NotSaved);
             Transferable tr = dtde.getTransferable();
             SimComponent dropped = (SimComponent) tr.getTransferData(TransferableSimComponent.COMPONENT_FLAVOR);
             if (dtde.isDataFlavorSupported(TransferableSimComponent.COMPONENT_FLAVOR) || dtde.isDataFlavorSupported(DataFlavor.stringFlavor)) {
@@ -2402,15 +2660,16 @@ class DnDpaneldrop extends TransferHandler implements DropTargetListener {
                 simController.placeComponent(dropped, tempPoint);
                 simController.setDropOccured(true);
                 
-                
-                if(simController.getState()!= null){
-                    // do a UndoRedo controller activities
-                simController.createModification(dropped.getComponentName(), simController.getSimUser().getFirstName(), "drop", System.currentTimeMillis(), tempPoint.toString());
-                simController.splitUndoRedoLog();
-                }
-                else{
-                
-                }
+                 if(simController.getSimUser() == null){ // whe a user isnt logged in
+                 simController.createModification("guestlogger.klog",dropped.getComponentName(), "GUEST", "drop", System.currentTimeMillis(), tempPoint.toString()); 
+                   simController.splitUndoRedoLog("guestlogger.klog");
+                 }
+                 else{
+                  simController.createModification("logger.klog",dropped.getComponentName(), simController.getSimUser().getFirstName(), "drop", System.currentTimeMillis(), tempPoint.toString()); 
+                    simController.splitUndoRedoLog("logger.klog");
+                 }
+                 
+              
                
                 dtde.dropComplete(true);
                 //ask to see
@@ -2720,15 +2979,16 @@ class ComponentDrag extends MouseAdapter implements MouseListener {
                             new SimPoint(me.getX(), me.getY()));
                 } else {
                     isEmptyDrag = true;
-                    dragController.updateStatustext("Illegal Drag Operation! u cant do that");
+//                    dragController.updateStatustext("Illegal Drag Operation! u cant do that");
                     OkOption ok = new OkOption(null, "KSimulator");
-                    ok.setLabel1("Illegal Drag Operation! u cant do that");
+                    ok.setLabel1("Illegal Drag Operation! You can not do that");
+                    ok.setSize(350, 100);
                     ok.showDialog();
                 }
 
             }
         } catch (NullPointerException nul) {
-            Logger.getLogger(SimView.class.getName()).log(Level.SEVERE, null, nul);
+            Logger.getLogger(SimView.class.getName()).log(Level.SEVERE, null, "First mouse click");
         }
     }
 
@@ -2758,10 +3018,22 @@ class ComponentDrag extends MouseAdapter implements MouseListener {
 
             placedComponents.get(draggedComponent).setTopX(me.getX() - 100);
             placedComponents.get(draggedComponent).setTopY(me.getY() - 100);
-
-            dragController.createModification(draggedComponent.getComponentName(), dragController.getSimUser().getFirstName(),
+try{
+             if(dragController.getSimUser() == null){ // whe a user isnt logged in
+               dragController.createModification("guestlogger.klog",draggedComponent.getComponentName(), "GUEST",
                     "dragged", System.currentTimeMillis(), new SimPoint(placedComponents.get(draggedComponent).getTopX(), placedComponents.get(draggedComponent).getTopY()).toString());
-            dragController.splitUndoRedoLog();
+               dragController.splitUndoRedoLog("guestlogger.klog");
+                 }
+                 else{
+                  dragController.createModification("logger.klog",draggedComponent.getComponentName(), dragController.getSimUser().getFirstName(),
+                    "dragged", System.currentTimeMillis(), new SimPoint(placedComponents.get(draggedComponent).getTopX(), placedComponents.get(draggedComponent).getTopY()).toString());
+                    dragController.splitUndoRedoLog("logger.klog");
+                 }
+            
+}
+catch(NullPointerException ex){
+    System.out.println("NullpointerException on 2946");
+}
         } else {
             if (!isEmptyDrag) {
                 for (int i = 0; i < multiDraggedComponents.size(); i++) {
@@ -2815,6 +3087,7 @@ class ComponentDrag extends MouseAdapter implements MouseListener {
                         int numberComplete = 0;
                         YesNoOption yesno = new YesNoOption(dragFrame, "KSimulator");
                         yesno.setLabel1("Component placed correctly. View 3D image?");
+                        yesno.setSize(350, 100);
                         boolean response = yesno.showDialog();
 
                         if (response) {
@@ -2845,6 +3118,7 @@ class ComponentDrag extends MouseAdapter implements MouseListener {
 //                               JOptionPane.showMessageDialog(null, "Simulation Complete");
                                     OkOption okk = new OkOption(null, "KSimulator");
                                     okk.setLabel1("Assembly Complete");
+                                    okk.setSize(150, 100);
                                     okk.showDialog();
                                 }
 
@@ -2883,6 +3157,7 @@ class ComponentDrag extends MouseAdapter implements MouseListener {
 //                            JOptionPane.showMessageDialog(null, "Simulation Complete");
                                 OkOption okk = new OkOption(null, "KSimulator");
                                 okk.setLabel1("Assembly Complete");
+                                okk.setSize(150, 100);
                                 okk.showDialog();
                             }
 
@@ -2896,6 +3171,7 @@ class ComponentDrag extends MouseAdapter implements MouseListener {
                         dragController.updateStatustext("Can not drop " + "'" + draggedComponent.getComponentName() + "'" + "  on " + "'" + succeededComponent.getComponentName() + "'");
                         OkOption ok1 = new OkOption(null, "KSimulator");
                         ok1.setLabel1("Can not drop " + "'" + draggedComponent.getComponentName() + "'" + "  on " + "'" + succeededComponent.getComponentName() + "'");
+                        ok1.setSize(800, 100);
                         ok1.showDialog();
                     }
 
@@ -3067,6 +3343,7 @@ class ThemeChangeListener implements MouseListener {
         // alert for closing app
         OkOption alert = new OkOption(null, "Ksimulator");
         alert.setMessage("You have to restart Application to effect theme Change");
+        alert.setSize(400, 100);
         alert.showDialog();
     }
 }

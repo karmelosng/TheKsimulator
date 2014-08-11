@@ -6,9 +6,8 @@ package com.karmelos.ksimulator.jdialogs;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
@@ -34,7 +33,6 @@ ImageIcon icon = new ImageIcon(getClass().getResource("/com/karmelos/ksimulator/
     public YesNoOption(Frame owner, String title) {
         super(owner, title);
         //initialize components
-   
     }
 
     public String getLabel1() {
@@ -87,7 +85,7 @@ ImageIcon icon = new ImageIcon(getClass().getResource("/com/karmelos/ksimulator/
         add(panel1);
         add(panel2,BorderLayout.SOUTH);
                 
-        setSize(300, 130);
+//        setSize(300, 130);
         setModal(true);
         setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         setModalExclusionType(Dialog.ModalExclusionType.NO_EXCLUDE);

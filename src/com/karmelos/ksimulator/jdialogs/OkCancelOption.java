@@ -6,6 +6,7 @@ package com.karmelos.ksimulator.jdialogs;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -84,7 +85,7 @@ ImageIcon icon = new ImageIcon(getClass().getResource("/com/karmelos/ksimulator/
         add(panel1);
         add(panel2,BorderLayout.SOUTH);
                 
-        setSize(350, 130);
+//        setSize(350, 130);
         setModal(true);
         setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         setModalExclusionType(Dialog.ModalExclusionType.NO_EXCLUDE);

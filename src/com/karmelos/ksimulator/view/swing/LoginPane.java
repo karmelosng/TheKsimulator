@@ -143,6 +143,7 @@ public class LoginPane extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginButtonMouseClicked
+       Object[] loginObject = new Object[2];
         SimController s = getWrk().getController();
         String pw = new String(passwordTextField.getPassword());
         SimUser authenticateLogin = s.login(usernameTextField.getText(), pw);
@@ -158,8 +159,14 @@ public class LoginPane extends javax.swing.JPanel {
             s.getState().setDescription(tempSv.getSessionDescLabel().getText());
             tempSv.getLoggedLabel().setText(authenticateLogin.getUsername());
             s.getState().setSimUser(authenticateLogin);
+           loginObject[0] = "changeUserNoState";
+           loginObject[1] = authenticateLogin;
+           s.getState().setChanged();
+           s.getState().notifyObservers(loginObject);
             PopUpFrame pop = (PopUpFrame) SwingUtilities.getWindowAncestor(this);
             pop.addSavePanel(savePanel, wrk);
+            savePanel.setSize(371, 300);
+            pop.setSize(savePanel.getSize());
 
         }
     }//GEN-LAST:event_loginButtonMouseClicked

@@ -20,7 +20,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
@@ -83,10 +82,10 @@ private SimView simViewer;
         usernameLabel.setBorder(new EmptyBorder(0, 10, 0, 0));
         passwordLabel.setBorder(new EmptyBorder(0, 10, 0, 0));
         //btn
-        changeUserBtn= new JButton("ChangeUser");
+        changeUserBtn= new JButton("Change User");
         changeUserBtn.setIcon(iconLoginButt);
         changeUserBtn.addMouseListener(this);
-        logOutCurrentUser= new JButton("LogOut");
+        logOutCurrentUser= new JButton("Logout");
         logOutCurrentUser.setIcon(iconLogout);
         logOutCurrentUser.addMouseListener(this);
         // seperators
@@ -174,7 +173,7 @@ private SimView simViewer;
      }
     else{
          
-       errorlabel.setText("Please Type in Password");
+       errorlabel.setText("Please Type a Password");
          
          }
     }

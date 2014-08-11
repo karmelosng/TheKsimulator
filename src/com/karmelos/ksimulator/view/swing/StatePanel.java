@@ -25,6 +25,7 @@ public class StatePanel extends javax.swing.JPanel {
   private DefaultListModel stateListModel;
   private SimView simView;
   private BufferedImage bImage;
+  private String userName;
     /**
      * Creates new form StatePanel
      */
@@ -35,6 +36,15 @@ public class StatePanel extends javax.swing.JPanel {
         
        repaint();
     }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+    
     private void initializeOpen(){
         
      SimController sc= getwrk().getController();
@@ -75,21 +85,21 @@ public class StatePanel extends javax.swing.JPanel {
         openStateJList.setModel(stateListModel);
         jScrollPane1.setViewportView(openStateJList);
 
-        refreshButton.setText("RefresH");
+        refreshButton.setText("Refresh");
         refreshButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 refreshButtonActionPerformed(evt);
             }
         });
 
-        jButton1.setText("OPEN");
+        jButton1.setText("Open");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        cancelOnOpenState.setText("CANCEL");
+        cancelOnOpenState.setText("Cancel");
         cancelOnOpenState.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelOnOpenStateActionPerformed(evt);
@@ -144,11 +154,14 @@ public class StatePanel extends javax.swing.JPanel {
                 .addContainerGap(30, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
-        stateListModel.removeAllElements();
+    void refresh(){
+    stateListModel.removeAllElements();
         getwrk().startSimulation(); 
-        initializeOpen();        // TODO add your handling code here:
+        initializeOpen();
+    }
+    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+                // TODO add your handling code here:
+        refresh();
     }//GEN-LAST:event_refreshButtonActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -179,6 +192,10 @@ public class StatePanel extends javax.swing.JPanel {
            getwrk().getController().setOpenDirective(true);
             getwrk().getRecentMenu().setEnabled(false);
             stateListModel.removeAllElements();
+            // This delete all .klog files and creates new One for new write for
+            
+            getwrk().getController().createUndoRedoFile("logger.klog");// this line deletes exicsting log files to craete new  klog file for new work 
+             getwrk().getController().appendLoggerOpen();
         }
         else
         {
