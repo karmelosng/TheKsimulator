@@ -201,8 +201,7 @@ public class SimView extends javax.swing.JFrame implements Observer {
         //Add Listeners to the Generated VectorList of Checboxes
         AttachListener(listOfLabels);
 
-        if(controller.getState() == null){
-        }
+        
     }
 
     public JLabel getSessionDescLabel() {
@@ -1257,14 +1256,14 @@ public class SimView extends javax.swing.JFrame implements Observer {
 //                temp.setVisible(true);
 //            } catch (IOException ex) {
 //                Logger.getLogger(SimView.class.getName()).log(Level.SEVERE, null, ex);
-                 openOpen();
+                        openOpen();
 //            }
         } else if ((getPresentSimUser() == null && controller.getState() == null) ||(getPresentSimUser() == null && controller.getState() != null)) {
             System.out.println("user null cann t open");
 //            JOptionPane.showMessageDialog(null, "You cannot Open Sessions Since you arent a valid user!",
 //                    "Error", JOptionPane.OK_OPTION);
             OkOption ok = new OkOption(this, "KSimulator");
-            ok.setLabel1("You cannot open sessions since you are not a valid user");
+            ok.setLabel1("Guest users cannot open a session");
             ok.setSize(350,100);
             ok.showDialog();
 
@@ -1321,7 +1320,13 @@ public class SimView extends javax.swing.JFrame implements Observer {
                     pop.setIconImage(ImageIO.read(this.getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/kicon.png")));
                     openPanel.setSize(400, 400);
                     pop.setTitle("KSimulator");
-                    openPanel.refresh();
+                    new Thread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            openPanel.refresh();
+                        }
+                    }).start();
                     pop.setSize(openPanel.getSize());
                     pop.setVisible(true);
                 } catch (IOException ex) {
@@ -1594,69 +1599,110 @@ public class SimView extends javax.swing.JFrame implements Observer {
     }
     
     private void newItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newItemActionPerformed
-        if (!controller.getDropOccured() && controller.getState() == null) {
-            makeNewSessionDialog();
-            
-        }
-        else if(controller.getDropOccured() && controller.getState() == null){
-            System.out.println(" drop and state is null");
+//        if (!controller.getDropOccured() && controller.getState() == null) {
+//            makeNewSessionDialog();
+//            
+//        }
+//        else if(controller.getDropOccured() && controller.getState() == null){
+//            System.out.println(" drop and state is null");
+//        makeNewSessionDialog();
+//        }
+//        else if(controller.getSaved() == SimController.SaveState.Saved){
+//        OkCancelOption okcancel = new OkCancelOption(this, "KSimulator");
+//        okcancel.setLabel1("You are about to start a new session, your current session will be cleared. Do you want to continue?");
+//        okcancel.setSize(800, 100);
+//        boolean response = okcancel.showDialog();
+//        if(response){
+//       makeNewSessionDialog();
+//       
+//        }
+//        
+//        }
+//        else if(controller.getDropOccured() && controller.getState() == null){
+//        OkCancelOption okcan = new OkCancelOption(this, "KSimulator"); 
+//        okcan.setLabel1("Your current session will not be saved since you are not logged in");
+//        okcan.setSize(400, 100);
+//        }
+//        else {
+////            JOptionPane.showMessageDialog(this, "Simulation already Started!! Save to Continue!",
+////                    null, JOptionPane.OK_OPTION);
+//            System.out.println( "for drop "+controller.getDropOccured());
+//            System.out.println("for  state"+controller.getState());
+//            OkOption ok_option = new OkOption(this, "KSimulator");
+//            ok_option.setMessage("Scenario not anticipated!");
+//            ok_option.setSize(300, 100);
+//            ok_option.showDialog();
+//
+//        }
+
+         if(controller.getState()== null){
+        if(controller.getSimUser()==null){
         makeNewSessionDialog();
         }
-        else if(controller.getSaved() == SimController.SaveState.Saved){
-        OkCancelOption okcancel = new OkCancelOption(this, "KSimulator");
-        okcancel.setLabel1("You are about to start a new session, your current session will be cleared. Do you want to continue?");
-        okcancel.setSize(800, 100);
-        boolean response = okcancel.showDialog();
+        else if(controller.getSimUser() != null){
+        makeNewSessionDialog();
+        }
+        }
+        else if(controller.getState() != null){
+        if(controller.getSimUser() == null){
+        YesNoOption yesno = new YesNoOption(this, "KSismulator");
+        yesno.setLabel1("Your session will not be saved because you are not logged in. Will you like to save this session ?");
+        yesno.setSize(750, 100);
+        boolean response = yesno.showDialog();
         if(response){
-       makeNewSessionDialog();
-       
+        openLogin();
+        }
+        else{
+        makeNewSessionDialog();
+        }
+        }
+        else if(controller.getSimUser() != null){
+        if(controller.getSaved() == SimController.SaveState.Saved){
+        YesNoOption okcan = new YesNoOption(this, "KSimulator");
+        okcan.setLabel1("You are about to start a new session, your current session will be cleared. Do you want to continue ?");
+        okcan.setSize(750, 100);
+        boolean response = okcan.showDialog();
+        if(response){
+        makeNewSessionDialog();
+        }
+                
+        }
+        else if(controller.getSaved() == SimController.SaveState.NotSaved){
+        YesNoOption yesno = new YesNoOption(this, "KSimulator");
+        yesno.setLabel1("Do you want to save this session before opening a new one ?");
+        yesno.setSize(400, 100);
+        boolean response = yesno.showDialog();
+        if(response){
+        opensave();
+        }
+        else{
+        makeNewSessionDialog();
+        }
+        }
+        }
         }
         
-        }
-        else if(controller.getDropOccured() && controller.getState() == null){
-        OkCancelOption okcan = new OkCancelOption(this, "KSimulator"); 
-        okcan.setLabel1("Your current session will not be saved since you are not logged in");
-        okcan.setSize(400, 100);
-        }
-        else {
-//            JOptionPane.showMessageDialog(this, "Simulation already Started!! Save to Continue!",
-//                    null, JOptionPane.OK_OPTION);
-            System.out.println( "for drop "+controller.getDropOccured());
-            System.out.println("for  state"+controller.getState());
-            OkOption ok_option = new OkOption(this, "KSimulator");
-            ok_option.setMessage("Scenario not anticipated!");
-            ok_option.setSize(300, 100);
-            ok_option.showDialog();
-
-        }
-//        if(controller.getState()== null){
-//        if(controller.getSimUser()==null){
-//        makeNewSessionDialog();
-//        }
-//        else if(controller.getSimUser() != null){
-//        makeNewSessionDialog();
-//        }
-//        }
-//        else if(controller.getState() != null){
-//        if(controller.getSimUser() == null){
-//        YesNoOption yesno = new YesNoOption(this, "KSismulator");
-//        yesno.setLabel1("Your session will not be saved because you are not logged in. Will you like to save?");
-//        yesno.setSize(800, 100);
-//        boolean response = yesno.showDialog();
-//        if(response){
-////        open
-//        }
-//        }
-//        }
     }//GEN-LAST:event_newItemActionPerformed
 
+        private void openLogin(){
+        try {
+            PopUpFrame popupFrameTemp;
+            
+            popupFrameTemp = popupFrame.addLoginPanel(loginPanel, this);
+            popupFrameTemp.setIconImage(ImageIO.read(this.getClass().getResource("/com/karmelos/ksimulator/2ndbaricon/kicon.png")));
+            loginPanel.setSize(380, 400);
+            popupFrameTemp.setTitle("KSimulator");
+            popupFrameTemp.setSize(loginPanel.getSize());
+            popupFrameTemp.setVisible(true);
+        } catch (IOException ex) {
+            Logger.getLogger(SimView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
         //flags on save, if no session started the click save brings an error message else saves session
         PopUpFrame popupFrameTemp;
         if (controller.getState() == null) {
-            System.out.println("No simulation");
-//            JOptionPane.showMessageDialog(this, "No Simulation Started!Click on New to Start",
-//                    null, JOptionPane.OK_OPTION);
             OkOption ok = new OkOption(this, "KSimulator");
             ok.setLabel1("No simulation started!Click on \"New\" to Start");
             ok.setSize(350, 100);

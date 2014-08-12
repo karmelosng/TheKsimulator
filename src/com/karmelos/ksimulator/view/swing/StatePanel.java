@@ -5,6 +5,7 @@
 package com.karmelos.ksimulator.view.swing;
 
 import com.karmelos.ksimulator.controller.SimController;
+import com.karmelos.ksimulator.jdialogs.OkOption;
 import com.karmelos.ksimulator.model.SimState;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -184,6 +185,7 @@ public class StatePanel extends javax.swing.JPanel {
             controlState.setSavedAt(tempState.getSavedAt());
             controlState.setSimUser(tempState.getSimUser());
             
+            
              controlState.setChanged();  
              tempObject[0] = "OpenComponent";
              controlState.notifyObservers(tempObject);
@@ -191,6 +193,8 @@ public class StatePanel extends javax.swing.JPanel {
             getwrk().reloadListsOnOpen(tempState.getAvailableComponents(),tempState.getPlacedComponents());
            getwrk().getController().setOpenDirective(true);
             getwrk().getRecentMenu().setEnabled(false);
+            getwrk().getSessionDescLabel().setText(tempState.getDescription());
+            getwrk().getController().setSave(SimController.SaveState.Saved);
             stateListModel.removeAllElements();
             // This delete all .klog files and creates new One for new write for
             
@@ -199,8 +203,12 @@ public class StatePanel extends javax.swing.JPanel {
         }
         else
         {
-        JOptionPane.showMessageDialog(null, "You havent Selected Any Session To Open",
-                        "Error", JOptionPane.OK_OPTION);
+//        JOptionPane.showMessageDialog(null, "You havent Selected Any Session To Open",
+//                        "Error", JOptionPane.OK_OPTION);
+            OkOption okop = new OkOption(null, "KSimulator");
+            okop.setLabel1("You havent Selected Any Session To Open");
+            okop.setSize(300, 100);
+            okop.showDialog();
         getwrk().getController().closeState();
         }
        SwingUtilities.windowForComponent(this).setVisible(false);  

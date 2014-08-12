@@ -27,7 +27,6 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -76,7 +75,8 @@ public class SimController {
     private List<JLabel> listofAttachedThemes;
     private Map<String, String> mapOfThemes = new HashMap<String, String>();
     // url formatjdbc:derby://localhost:1527/ksimulator
-    private static String baseUrl = "jdbc:derby://host:1527/ksimulator";
+    private static String baseUrl = "jdbc:derby://host:1527/ksim";
+    private static String baseUrl2 = "jdbc:derby:ksim";
     private boolean firstSave = true;
     private List<SimComponent> immediatePlacedComponentBeforeSave = new LinkedList<SimComponent>();
     private AssetManager assetCopy;
@@ -107,7 +107,7 @@ public class SimController {
         dummyState = new SimStateNull();
         Map LocalProperty = new HashMap();
         LocalProperty.put("hibernate.show_sql", true);
-        LocalProperty.put("hibernate.connection.url", baseUrl.replaceAll("host", "127.0.0.1"));
+        LocalProperty.put("hibernate.connection.url", baseUrl2.replaceAll("host", "127.0.0.1"));
         entityManagerfactory = Persistence.createEntityManagerFactory("Access", LocalProperty);
         entityManager = entityManagerfactory.createEntityManager();
         instantiateServerEntityManager();
@@ -518,7 +518,7 @@ public class SimController {
         } else {
             Object[] tempObject = new Object[2];
             tempObject[0] = "LogOut";
-            tempObject[1] = homeUser;
+            tempObject[1] = "GUEST";
             state.setChanged();
             state.notifyObservers(tempObject);
 
@@ -1237,7 +1237,7 @@ public class SimController {
     public void setCurrentTheme(String current) {
         // update currentTheme
         Query q = entityManager.createQuery("select o from Settings o where o.keyword = :mtid ");
-        q.setParameter("mtid", "currentTheme");
+        q.setParameter("mtid", "currenttheme");
         Settings setup = (Settings) q.getResultList().get(0);
         setup.setSettingvalues(current);
         mergeObject(setup);

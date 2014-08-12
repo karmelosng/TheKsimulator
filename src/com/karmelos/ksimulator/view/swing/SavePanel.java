@@ -237,7 +237,7 @@ public class SavePanel extends javax.swing.JPanel {
          Map<SimComponent,SimPoint> tempMap = stateLocal.getPlacedComponents();
         
         if (response) {
-            
+            wrk.getController().setSave(SimController.SaveState.Saved);
  
             // for fresh Save get all info first
             if (stateLocal != null && stateLocal.getId() == null &&
@@ -284,7 +284,7 @@ public class SavePanel extends javax.swing.JPanel {
                 wrk.getController().setDropOccured(false);
                 wrk.getController().setFirstSave(false);
                  wrk.getController().afterFirstSaveReservoirCollector();
-                 wrk.getController().setSave(SimController.SaveState.Saved);
+//                 wrk.getController().setSave(SimController.SaveState.Saved);
                 // wrk.getController().setKeepOpen(rwStats);
                 wrk.repaint();
                 if(wrk.getController().isInstigClear()  ){
